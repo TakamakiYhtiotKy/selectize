@@ -2109,7 +2109,8 @@
 			return {
 				fields      : settings.searchField,
 				conjunction : settings.searchConjunction,
-				sort        : sort
+				sort        : sort,
+				nesting     : settings.nesting // jsruok: added to enable nesting
 			};
 		},
 	
@@ -3709,8 +3710,11 @@
 				 * @param {string} html_element
 				 * @return {string}
 				 */
+				// copy-pasted this from multiClose
+
 				var append = function(html_container, html_element) {
-					return html_container + html_element;
+					var pos = html_container.search(/(<\/[^>]+>\s*)$/);
+					return html_container.substring(0, pos) + html_element + html_container.substring(pos);
 				};
 	
 				thisRef.setup = (function() {
@@ -3730,7 +3734,7 @@
 						original.apply(thisRef, arguments);
 	
 						// add event listener
-						thisRef.$control.on('click', '.' + options.className, function(e) {
+						thisRef.$control.on('mousedown', '.' + options.className, function(e) {
 							e.preventDefault();
 							if (self.isLocked) return;
 	
